@@ -1,0 +1,13 @@
+{
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "include": ["dist"],
+  "exclude": ["dist/__tests__/"],
+  "extension": [".js", ".ts"],
+  "reporter": ["text", "html"],
+  "exclude-after-remap": false,
+  "check-coverage": true,
+  "branches": 100,
+  "lines": 100,
+  "functions": 100,
+  "statements": 100
+}
