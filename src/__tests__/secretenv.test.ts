@@ -58,7 +58,7 @@ describe('ResolveEnv', () => {
     expect(process.env['SOME_GCP_SECRET']).toEqual(badGcpSecretName);
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     // Restore env
     process.env = oldEnv;
   });

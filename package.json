@@ -31,6 +31,7 @@
     "pretest": "run-s rebuild",
     "rebuild": "run-s lint:fix clean build:doc build",
     "test": "jest",
+    "test:integration": "jest -c jest.integration.config.js",
     "test:doc": "/bin/bash -c 'diff <(jsdoc2md --files \"./src/**/*.ts\" --configure ./jsdoc2md.json) docs.md'"
   },
   "dependencies": {

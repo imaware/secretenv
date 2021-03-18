@@ -3,5 +3,4 @@ dist/
 coverage/
 .eslintrc.js
 test/
-commitlint.config.js
-jest.config.js
+/*.config.js
