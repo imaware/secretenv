@@ -27,7 +27,7 @@
     "eslint:fix": "eslint --report-unused-disable-directives . --fix",
     "mdlint": "markdownlint -c .markdownlint.jsonc **.md",
     "mdlint:fix": "markdownlint -c .markdownlint.jsonc -f **.md",
-    "prepare": "husky install",
+    "prepare": "run-s clean build:prod copy:package",
     "pretest": "run-s rebuild",
     "rebuild": "run-s lint:fix clean build:doc build",
     "test": "jest",
