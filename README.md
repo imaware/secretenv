@@ -4,4 +4,4 @@ NodeJS utility for automatically resolving environment variables to secret value
 
 ## Docs
 
-Automatically generated docs located in `./docs.md`.
+Automatically generated docs are located in `./docs.md`.
