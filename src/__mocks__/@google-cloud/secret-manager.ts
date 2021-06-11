@@ -22,7 +22,6 @@ class SecretManagerServiceClient {
     ]
   > => {
     switch (name) {
-      // gcp-secrets://projects/projectfoo/secrets/secretbar/versions/latest
       case 'projects/projectfoo/secrets/secretbar/versions/latest':
         return [
           {
@@ -30,6 +29,22 @@ class SecretManagerServiceClient {
             payload: {
               data: 'somesecretvalue',
             },
+          },
+        ];
+      case 'projects/my-project/secrets/my-secret/versions/latest':
+        return [
+          {
+            name,
+            payload: {
+              data: 'my-value',
+            },
+          },
+        ];
+      case 'projects/my-project/secrets/my-undefined-secret/versions/latest':
+        return [
+          {
+            name,
+            payload: {},
           },
         ];
       default:

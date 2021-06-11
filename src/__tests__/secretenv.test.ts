@@ -28,6 +28,30 @@ describe('ResolveEnv', () => {
     expect(process.env['SOME_GCP_SECRET']).toEqual(testGcpSecretValue);
   });
 
+  it('should resolve AWS SSM Parameters', async () => {
+    const testAwsSsmParameter =
+      'aws-ssm://arn:aws:ssm:us-east-2:123456789:parameter/my/parameter:encrypted';
+    const testAwsSsmParameterValue = 'my-value';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SSM_PARAM: testAwsSsmParameter,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SSM_PARAM']).toEqual(testAwsSsmParameterValue);
+  });
+
+  it('should resolve AWS SSM Parameters (Unencrypted)', async () => {
+    const testAwsSsmParameter =
+      'aws-ssm://arn:aws:ssm:us-east-2:123456789:parameter/my/parameter';
+    const testAwsSsmParameterValue = 'my-value';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SSM_UNENCRYPTED_PARAM: testAwsSsmParameter,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SSM_UNENCRYPTED_PARAM']).toEqual(
+      testAwsSsmParameterValue,
+    );
+  });
+
   it('should not resolve incorrectly formatted GCP Secrets', async () => {
     let badGcpSecretName =
       'gcp-secret://projects/projectfoo/secrets/secretbar/versions/latest';
@@ -56,6 +80,45 @@ describe('ResolveEnv', () => {
     });
     await resolveEnv();
     expect(process.env['SOME_GCP_SECRET']).toEqual(badGcpSecretName);
+  });
+
+  it('should not resolve incorrectly formatted AWS SSM Parameters', async () => {
+    let badAwsSsmParameterName =
+      'aws-ssm//arn:aws:ssm:us-east-2:123456789:/my/parameter';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SSM_PARAMETER: badAwsSsmParameterName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SSM_PARAMETER']).toEqual(
+      badAwsSsmParameterName,
+    );
+    badAwsSsmParameterName =
+      'arn:aws:ssm:us-east-2:123456789:parameter/my/parameter';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SSM_PARAMETER: badAwsSsmParameterName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SSM_PARAMETER']).toEqual(
+      badAwsSsmParameterName,
+    );
+    badAwsSsmParameterName =
+      'aws-ssm://arn:aws:ssm:us-east-2:123456789:parameter';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SSM_PARAMETER: badAwsSsmParameterName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SSM_PARAMETER']).toEqual(
+      badAwsSsmParameterName,
+    );
+    badAwsSsmParameterName =
+      'aws-ssm://arn:aws:ssm::123456789:parameter/my/parameter';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SSM_PARAMETER: badAwsSsmParameterName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SSM_PARAMETER']).toEqual(
+      badAwsSsmParameterName,
+    );
   });
 
   afterAll(async () => {
