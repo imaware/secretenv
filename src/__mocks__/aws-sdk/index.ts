@@ -1,6 +1,6 @@
 'use strict';
 
-import awsDefault, {AWSError, Request} from 'aws-sdk';
+import awsDefault from 'aws-sdk';
 
 const aws = jest.createMockFromModule('aws-sdk') as any;
 
