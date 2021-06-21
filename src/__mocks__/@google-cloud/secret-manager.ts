@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const secretManager = jest.createMockFromModule(
   '@google-cloud/secret-manager',

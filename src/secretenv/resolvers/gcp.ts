@@ -14,9 +14,7 @@ export const gcpSecretsPattern = new RegExp(
 /**
  * Function to retrieve the GCP Secrets Manager version specified by project ID, name, and version.
  *
- * @param {string} projectId - The GCP project id.
- * @param {string} secretName - The name of the secret.
- * @param {string} secretVersion - The version of the secret
+ * @param {RegExpMatchArray} match - The RegEx match object.
  * @returns {string | undefined} - Returns the value of the secret, or undefined.
  */
 export const retrieveGcpSecret = async (

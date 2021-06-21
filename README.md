@@ -10,7 +10,7 @@ Automatically generated docs located in `./docs.md`.
 
 - [x] GCP Secrets
 - [x] AWS SSM Parameter Store
-- [ ] AWS Secrets Manager
+- [x] AWS Secrets Manager (SecretString only)
 - [ ] Vault
 - [ ] Azure Key Vault
 

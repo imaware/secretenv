@@ -52,6 +52,39 @@ describe('ResolveEnv', () => {
     );
   });
 
+  it('should resolve AWS Secrets Manager SecretString', async () => {
+    const testAwsSecret =
+      'aws-secrets://arn:aws:secretsmanager:us-east-2:123456789012:secret:my-simple-secret';
+    const testAwsSecretValue = 'my-simple-secret-value';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET: testAwsSecret,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(testAwsSecretValue);
+  });
+
+  it('should resolve AWS Secrets Manager SecretString with version stage', async () => {
+    const testAwsSecret =
+      'aws-secrets://arn:aws:secretsmanager:us-east-2:123456789012:secret:my/Complex/Secret@:stage:STAGING';
+    const testAwsSecretValue = 'my-complex-secret-value-staging';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET_STAGE: testAwsSecret,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET_STAGE']).toEqual(testAwsSecretValue);
+  });
+
+  it('should resolve AWS Secrets Manager SecretString with version id', async () => {
+    const testAwsSecret =
+      'aws-secrets://arn:aws:secretsmanager:us-east-2:123456789012:secret:my/Complex/Secret@:version:f5529425-1aa3-4f8b-85c6-7e94e559bd0d';
+    const testAwsSecretValue = 'my-complex-secret-value-specificid';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET_VERSION: testAwsSecret,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET_VERSION']).toEqual(testAwsSecretValue);
+  });
+
   it('should not resolve incorrectly formatted GCP Secrets', async () => {
     let badGcpSecretName =
       'gcp-secret://projects/projectfoo/secrets/secretbar/versions/latest';
@@ -119,6 +152,44 @@ describe('ResolveEnv', () => {
     expect(process.env['SOME_AWS_SSM_PARAMETER']).toEqual(
       badAwsSsmParameterName,
     );
+  });
+
+  it('should not resolve incorrectly formatted AWS Secrets Manager Parameters', async () => {
+    let badAwsSecretName =
+      'aws-secrets//arn:aws:secretsmanager:us-east-2:123456789:secret:my/secret';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET: badAwsSecretName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(badAwsSecretName);
+    badAwsSecretName =
+      'aws-secrets://arn:aws:secretsmanager:us-east-2:123456789:my/secret';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET: badAwsSecretName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(badAwsSecretName);
+    badAwsSecretName =
+      'arn:aws:secretsmanager:us-east-2:123456789:secret:my/secret';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET: badAwsSecretName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(badAwsSecretName);
+    badAwsSecretName =
+      'aws-secrets://arn:aws:secretsmanager:us-east-2:123456789:secret:';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET: badAwsSecretName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(badAwsSecretName);
+    badAwsSecretName =
+      'aws-secrets://arn:aws:secretsmanager::123456789:secret:my/secret';
+    process.env = Object.assign(testEnv, {
+      SOME_AWS_SECRET: badAwsSecretName,
+    });
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(badAwsSecretName);
   });
 
   afterAll(async () => {
