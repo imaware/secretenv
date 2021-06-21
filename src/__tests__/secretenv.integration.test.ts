@@ -11,7 +11,23 @@ const ssmClient = new aws.SSM({
   }),
   ...(process.env.AWS_SSM_ENDPOINT_TLS === '0' && {tls: false}),
 });
+const secretsClient = new aws.SecretsManager({
+  region: process.env.AWS_REGION ?? '',
+  ...(process.env.AWS_SECRETS_MANAGER_ENDPOINT_URL && {
+    endpoint: process.env.AWS_SECRETS_MANAGER_ENDPOINT_URL,
+  }),
+  ...(process.env.AWS_SECRETS_MANAGER_ENDPOINT_TLS === '0' && {tls: false}),
+});
 
+/** AWS Secrets Manager */
+const testAwsSecretsManagerTestSecretName = 'testing/secretenvTestSecret';
+const testAwsSecretsManagerEnvVar = `aws-secrets://arn:aws:secretsmanager:us-east-2:123456789012:secret:${testAwsSecretsManagerTestSecretName}`;
+const testAwsSecretsManagerTestSecretCurrentValue =
+  'secretenv-test-current-value';
+const testAwsSecretsManagerTestSecretStagingValue =
+  'secretenv-test-staging-value';
+
+/** AWS SSM */
 const testAwsSsmParameterName =
   process.env.TEST_SECRET_NAME ?? 'secretenv-test-param';
 const testAwsSsmParameterEnvVar = `aws-ssm://arn:aws:ssm:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:parameter/${testAwsSsmParameterName}:encrypted`;
@@ -22,6 +38,8 @@ const testAwsSsmParameterUnencryptedName =
 const testAwsSsmParameterUnencryptedEnvVar = `aws-ssm://arn:aws:ssm:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:parameter/${testAwsSsmParameterUnencryptedName}`;
 const testAwsSsmParameterUnencryptedValue =
   process.env.TEST_SECRET_VALUE ?? 'mysecretawsssmvalue-unencrypted';
+
+/** GCP */
 const testGcpSecretName =
   process.env.TEST_SECRET_NAME ?? 'secretenv-test-param';
 const testGcpSecretEnvVar = `gcp-secrets://projects/${process.env.GCP_PROJECT_ID}/secrets/${testGcpSecretName}/versions/latest`;
@@ -30,6 +48,9 @@ const testGcpSecretValue =
 
 describe('ResolveEnv', () => {
   const oldEnv = process.env;
+  let testAwsSecretsManagerTestSecretArn: string;
+  let testAwsSecretsManagerTestSecretCurrentId: string | undefined;
+  let testAwsSecretsManagerTestSecretStagingId: string | undefined;
 
   beforeAll(async () => {
     // Create GCP secret
@@ -78,6 +99,33 @@ describe('ResolveEnv', () => {
       console.error('error creating test AWS SSM parameter (unencrypted)', e);
       throw e;
     }
+    // Create AWS secret with multiple versions
+    /** AWSCURRENT */
+    try {
+      await secretsClient
+        .createSecret({
+          Name: testAwsSecretsManagerTestSecretName,
+          SecretString: testAwsSecretsManagerTestSecretCurrentValue,
+        } as AWS.SecretsManager.CreateSecretRequest)
+        .promise()
+        .then((res: AWS.SecretsManager.CreateSecretResponse) => {
+          testAwsSecretsManagerTestSecretArn = res.ARN ?? '';
+          testAwsSecretsManagerTestSecretCurrentId = res.VersionId;
+          return secretsClient
+            .putSecretValue({
+              SecretString: testAwsSecretsManagerTestSecretStagingValue,
+              SecretId: res.ARN,
+              VersionStages: ['STAGING'],
+            } as AWS.SecretsManager.PutSecretValueRequest)
+            .promise()
+            .then((res: AWS.SecretsManager.PutSecretValueResponse) => {
+              testAwsSecretsManagerTestSecretStagingId = res.VersionId;
+            });
+        });
+    } catch (e) {
+      console.error('error creating AWS Secrets Manager SecretString', e);
+      throw e;
+    }
   });
 
   it('should resolve a test GCP Secret', async () => {
@@ -111,6 +159,17 @@ describe('ResolveEnv', () => {
     );
   });
 
+  it('should resolve a test AWS Secrets Manager SecretString', async () => {
+    process.env = Object.assign(oldEnv, {
+      SOME_AWS_SECRET: testAwsSecretsManagerEnvVar,
+    });
+    const {resolveEnv} = await import('../secretenv');
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET']).toEqual(
+      testAwsSecretsManagerTestSecretCurrentValue,
+    );
+  });
+
   afterAll(async () => {
     // Restore env
     process.env = oldEnv;
@@ -141,6 +200,17 @@ describe('ResolveEnv', () => {
         .promise();
     } catch (e) {
       console.error('error deleting test AWS SSM parameter (unencrypted)', e);
+      throw e;
+    }
+    // Delete AWS Secrets Manager Secret
+    try {
+      await secretsClient
+        .deleteSecret({
+          SecretId: testAwsSecretsManagerTestSecretArn,
+        } as AWS.SecretsManager.DeleteSecretRequest)
+        .promise();
+    } catch (e) {
+      console.error('error deleting test AWS Secrets Manager secret', e);
       throw e;
     }
   });

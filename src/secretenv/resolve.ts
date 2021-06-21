@@ -1,7 +1,9 @@
 import {SecretResolverFunc} from '../types';
 import {
+  awsSecretsManagerPattern,
   awsSsmPattern,
   gcpSecretsPattern,
+  retrieveAwsSecret,
   retrieveAwsSsmParameter,
   retrieveGcpSecret,
 } from './resolvers';
@@ -12,6 +14,7 @@ import {
 const secretResolverMap = new Map<RegExp, SecretResolverFunc>([
   [gcpSecretsPattern, retrieveGcpSecret],
   [awsSsmPattern, retrieveAwsSsmParameter],
+  [awsSecretsManagerPattern, retrieveAwsSecret],
 ]);
 
 /**
