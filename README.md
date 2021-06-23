@@ -55,3 +55,13 @@ AWS SSM Parameters should be referenced by this pattern:
 ```
 
 The `:encrypted` suffix specifies whether the SSM Parameter is KMS encrypted or not.
+
+### AWS Secrets Manager
+
+AWS Secrets Manager SecretStrings should be referenced by this pattern:
+
+```javascript
+/^aws-secrets:\/\/arn:aws:secretsmanager:(?<region>[^/]+):(?<account_id>[^/]+):secret:(?<secret_id>[a-zA-Z0-9/_+=.@-]+)(?<stage>:stage:(?<version_stage>[a-zA-Z0-9]+))?(?<version>:version:(?<version_id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}))?$/
+```
+
+*Only AWS Secrets of type `SecretString` are supported.
