@@ -5,14 +5,14 @@ jest.unmock('@google-cloud/secret-manager');
 jest.unmock('aws-sdk');
 const gcpSecretsClient = new SecretManagerServiceClient();
 const ssmClient = new aws.SSM({
-  region: process.env.AWS_REGION ?? '',
+  region: process.env.AWS_REGION ?? 'us-east-2',
   ...(process.env.AWS_SSM_ENDPOINT_URL && {
     endpoint: process.env.AWS_SSM_ENDPOINT_URL,
   }),
   ...(process.env.AWS_SSM_ENDPOINT_TLS === '0' && {tls: false}),
 });
 const secretsClient = new aws.SecretsManager({
-  region: process.env.AWS_REGION ?? '',
+  region: process.env.AWS_REGION ?? 'us-east-2',
   ...(process.env.AWS_SECRETS_MANAGER_ENDPOINT_URL && {
     endpoint: process.env.AWS_SECRETS_MANAGER_ENDPOINT_URL,
   }),
@@ -21,7 +21,7 @@ const secretsClient = new aws.SecretsManager({
 
 /** AWS Secrets Manager */
 const testAwsSecretsManagerTestSecretName = 'testing/secretenvTestSecret';
-const testAwsSecretsManagerEnvVar = `aws-secrets://arn:aws:secretsmanager:us-east-2:123456789012:secret:${testAwsSecretsManagerTestSecretName}`;
+const testAwsSecretsManagerEnvVar = `aws-secrets://arn:aws:secretsmanager:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_ID}:secret:${testAwsSecretsManagerTestSecretName}`;
 const testAwsSecretsManagerTestSecretCurrentValue =
   'secretenv-test-current-value';
 const testAwsSecretsManagerTestSecretStagingValue =
@@ -170,6 +170,47 @@ describe('ResolveEnv', () => {
     );
   });
 
+  it('should resolve a test AWS Secrets Manager SecretString by version stage', async () => {
+    process.env = Object.assign(oldEnv, {
+      SOME_AWS_SECRET_CURRENT: `${testAwsSecretsManagerEnvVar}:stage:AWSCURRENT`,
+    });
+    const {resolveEnv} = await import('../secretenv');
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET_CURRENT']).toEqual(
+      testAwsSecretsManagerTestSecretCurrentValue,
+    );
+  });
+
+  it('should resolve a test AWS Secrets Manager SecretString by version id', async () => {
+    process.env = Object.assign(oldEnv, {
+      SOME_AWS_SECRET_ID: `${testAwsSecretsManagerEnvVar}:version:${testAwsSecretsManagerTestSecretStagingId}`,
+    });
+    const {resolveEnv} = await import('../secretenv');
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET_ID']).toEqual(
+      testAwsSecretsManagerTestSecretStagingValue,
+    );
+  });
+
+  it('should resolve a test AWS Secrets Manager SecretString by version stage and id', async () => {
+    process.env = Object.assign(oldEnv, {
+      SOME_AWS_SECRET_STAGE_ID: `${testAwsSecretsManagerEnvVar}:stage:STAGING:version:${testAwsSecretsManagerTestSecretStagingId}`,
+    });
+    const {resolveEnv} = await import('../secretenv');
+    await resolveEnv();
+    expect(process.env['SOME_AWS_SECRET_STAGE_ID']).toEqual(
+      testAwsSecretsManagerTestSecretStagingValue,
+    );
+  });
+
+  it('should throw an error if Secret Manager stage and id do not match', async () => {
+    process.env = Object.assign(oldEnv, {
+      SOME_AWS_SECRET_NOMATCH: `${testAwsSecretsManagerEnvVar}:stage:AWSCURRENT:version:${testAwsSecretsManagerTestSecretStagingId}`,
+    });
+    const {resolveEnv} = await import('../secretenv');
+    await expect(resolveEnv()).rejects.toThrow();
+  });
+
   afterAll(async () => {
     // Restore env
     process.env = oldEnv;
@@ -207,6 +248,7 @@ describe('ResolveEnv', () => {
       await secretsClient
         .deleteSecret({
           SecretId: testAwsSecretsManagerTestSecretArn,
+          ForceDeleteWithoutRecovery: true,
         } as AWS.SecretsManager.DeleteSecretRequest)
         .promise();
     } catch (e) {
