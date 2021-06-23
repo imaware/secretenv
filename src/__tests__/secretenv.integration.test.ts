@@ -49,7 +49,6 @@ const testGcpSecretValue =
 describe('ResolveEnv', () => {
   const oldEnv = process.env;
   let testAwsSecretsManagerTestSecretArn: string;
-  let testAwsSecretsManagerTestSecretCurrentId: string | undefined;
   let testAwsSecretsManagerTestSecretStagingId: string | undefined;
 
   beforeAll(async () => {
@@ -110,7 +109,6 @@ describe('ResolveEnv', () => {
         .promise()
         .then((res: AWS.SecretsManager.CreateSecretResponse) => {
           testAwsSecretsManagerTestSecretArn = res.ARN ?? '';
-          testAwsSecretsManagerTestSecretCurrentId = res.VersionId;
           return secretsClient
             .putSecretValue({
               SecretString: testAwsSecretsManagerTestSecretStagingValue,
