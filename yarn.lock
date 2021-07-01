@@ -1105,11 +1105,11 @@
     strip-json-comments "^3.1.1"
 
 "@google-cloud/secret-manager@^3.5.0":
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-3.7.1.tgz#d96ba588f47fa55a35f2c80f30b7b2973087fa44"
-  integrity sha512-QXFNBQai0/6VW7m8u5GobyqnHOyn4xt/9RlflWvQKzgzetkOasZr7YbG5umhon/Gp70nTiDySLUV0NjCDQcY2g==
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-3.7.3.tgz#ab91618eff10e6d36b6ae6c56ac5aaa860f75475"
+  integrity sha512-cGhRY26Sn6laECsq3pHdTnzBfLDTYJq2Ke3v+EtJOQilZZDPW7jFsS7+jh5jag2MhVuMMMs/SIRui/0A/WEhOA==
   dependencies:
-    google-gax "^2.12.0"
+    google-gax "^2.17.0"
 
 "@grpc/grpc-js@~1.3.0":
   version "1.3.2"
@@ -4287,10 +4287,10 @@ google-auth-library@^7.0.2:
     jws "^4.0.0"
     lru-cache "^6.0.0"
 
-google-gax@^2.12.0:
-  version "2.15.0"
-  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-2.15.0.tgz#e753489a0ccbd7d4fd5c24979cbd5bf491ff2ec3"
-  integrity sha512-jfShUgX1DVu+DiOeAcsT5JbWlLdUnb2FsdWRb+Q/pNz6kNAUbmq8sFLB2uaWjlTxoSGHZLfrt3vJ9lpArzzQPA==
+google-gax@^2.17.0:
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-2.17.0.tgz#363791efaca3bd242e34e92295937e9215666d17"
+  integrity sha512-Ze/Oq0atVNKyKvDzQFU8B82V9w36GELQruXGsiY1jnySbieZ9vS75v98V/Z10PktmSVqis4sQ+FwK2gkgwIiiw==
   dependencies:
     "@grpc/grpc-js" "~1.3.0"
     "@grpc/proto-loader" "^0.6.1"
