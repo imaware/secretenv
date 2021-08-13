@@ -1139,9 +1139,9 @@
     strip-json-comments "^3.1.1"
 
 "@google-cloud/secret-manager@^3.5.0":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-3.8.1.tgz#fd811848b21db1d52090257769ea44543e78a09a"
-  integrity sha512-eH2p9HqQL0m65UF723mc8zcNIz4wKKE2RJZSusltIHIraU+zsu046Y2q4i6hI5QkL0qhfR48YVKDPn/LcQEb+Q==
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/secret-manager/-/secret-manager-3.9.0.tgz#fd0f5fb35a6e3c9a0a5b9611c08a70167e91fdaf"
+  integrity sha512-6dOfiuq3rJWxP6+1D2HbBqZh2SV5taRDljkFal1kCq+P37Pbtx/HYvsB3YTnzHOAkq0jdMOSSMHyBXZhgJrsiA==
   dependencies:
     google-gax "^2.17.1"
 
@@ -2325,9 +2325,9 @@ atob@^2.1.2:
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
 aws-sdk@*, aws-sdk@^2.926.0:
-  version "2.948.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.948.0.tgz#0c974c351af97dbc66dbd96bd6c20928baf10415"
-  integrity sha512-UJaCwccNaNNFtbhlvg+BmcaVWNI7RPonZA16nca0s3O+UnHm5y5H/nN6XpuJp+NUrxrLgTFaztPvjmBp5q6p+g==
+  version "2.967.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.967.0.tgz#e584b0fbdf60c89f128e113b18f382ac599ba82b"
+  integrity sha512-1IuQZsYZS67AMtywea+hL737sWHzeAzCqX3tEKTieMI+Ip5UoY4rNmQbJlUo8ysY+u8lixoiCFivEQfb/DG1cw==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
