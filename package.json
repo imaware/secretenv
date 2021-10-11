@@ -73,6 +73,11 @@
     "ts-jest": "^26.5.4",
     "typescript": "^4.2.3"
   },
+  "resolutions": {
+    "ansi-regex": "^5.0.1",
+    "set-value": "^4.0.1",
+    "strip-ansi": "^6.0.1"
+  },
   "publishConfig": {
     "access": "public"
   },
