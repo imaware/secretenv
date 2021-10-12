@@ -105,18 +105,17 @@ describe('AWS Secrets Manager', () => {
       errString?: string;
       value?: string;
     },
-  ][]).test('%s', async (_, {matchObj, errString, value}, done) => {
+  ][]).test('%s', async (_, {matchObj, errString, value}) => {
     expect(matchObj).not.toBeNull();
     if (errString) {
-      await expect(retrieveAwsSecret(matchObj)).rejects.toThrow(errString);
+      return expect(retrieveAwsSecret(matchObj)).rejects.toThrow(errString);
     } else {
-      await expect(retrieveAwsSecret(matchObj))
+      return expect(retrieveAwsSecret(matchObj))
         .resolves.toEqual(value)
         .catch(e => {
           console.error(e);
           throw e;
         });
     }
-    done();
   });
 });
