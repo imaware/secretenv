@@ -11,7 +11,7 @@ jobs:
       - id: checkout
         uses: actions/checkout@v2.4.0
       - id: npm-setup
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.2
         with:
           node-version: '14'
       - id: audit
@@ -22,7 +22,7 @@ jobs:
       - id: checkout
         uses: actions/checkout@v2.4.0
       - id: npm-setup
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.2
         with:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
