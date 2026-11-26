@@ -6391,9 +6391,9 @@ node-fetch@^2.6.1:
     whatwg-url "^5.0.0"
 
 node-forge@^0.10.0, node-forge@^1.0.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.2.1.tgz#82794919071ef2eb5c509293325cec8afd0fd53c"
-  integrity sha512-Fcvtbb+zBcZXbTTVwqGA5W+MKBj56UjVRevvchv5XrcyXbmNdesfZL37nlcWOfpgHhgmxApw3tQbTr4CqNmX4w==
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.4.4.tgz#4f4c87f12432a21acc61fff9a0a00803e19d46da"
+  integrity sha512-T6VRRpF3+czIGcXW/LOeoD7Ej28d8CF1UMEAbJyJRUtYMvyXAgxUPW2kbUibumvV9LiUQAznJOFyeYclzSJMMg==
 
 node-gyp@^7.1.0, node-gyp@^7.1.2:
   version "7.1.2"
